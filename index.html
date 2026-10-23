@@ -3,11 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#090d16">
+  <meta name="theme-color" content="#0c1220">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ThumbVault">
   <title>ThumbVault — Mobile Expense Tracker</title>
   
+  <!-- Standalone PWA Data-URI Manifest & Touch Icons -->
+  <link rel="manifest" id="manifestLink">
+  <link rel="apple-touch-icon" id="appleTouchIcon">
+  <link rel="icon" type="image/svg+xml" id="faviconLink">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
@@ -153,24 +160,37 @@
       border: 1px solid var(--border-strong);
     }
 
+    /* Reliable 44x44px Touch Target for Samsung / Mobile Viewports */
     .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 12px;
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      display: flex;
+      color: #f1f5f9;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      padding: 0;
+      outline: none;
       transition: all 0.15s ease;
+    }
+
+    .icon-btn svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+      stroke: #f1f5f9;
+      pointer-events: none;
     }
 
     .icon-btn:active {
       transform: scale(0.92);
-      background: var(--border-subtle);
+      background: var(--border-strong);
       color: #ffffff;
     }
 
@@ -813,8 +833,9 @@
         </button>
       </div>
 
-      <button class="icon-btn" onclick="openModal()" title="Settings" aria-label="Settings">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Bulletproof Gear / Sliders SVG Options Button -->
+      <button class="icon-btn" onclick="openModal()" title="Options and Sync" aria-label="Options and Sync" id="btnOpenOptions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
@@ -975,6 +996,21 @@
         All records stay directly on this device. Ready to backup or sync to Cloudflare R2.
       </p>
 
+      <!-- Cloudflare R2 Config & Manual Trigger -->
+      <div style="background: rgba(6, 9, 17, 0.65); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.05em;">Cloudflare R2 Endpoint</span>
+        <input type="text" id="r2EndpointInput" placeholder="https://api.yourdomain.com/api/sync" style="background: transparent; border: 1px solid var(--border-subtle); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; outline: none; font-family: var(--font-num);">
+        <input type="password" id="r2TokenInput" placeholder="Secret Key (x-vault-key)" style="background: transparent; border: 1px solid var(--border-subtle); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; outline: none;">
+        <button class="modal-btn" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #7dd3fc; padding: 9px; font-size: 13px;" onclick="syncWithR2()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Sync to Cloudflare R2
+        </button>
+      </div>
+
       <button class="modal-btn primary" onclick="exportBackupJSON()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -983,6 +1019,17 @@
         </svg>
         Export JSON File
       </button>
+
+      <!-- Import JSON backup -->
+      <label class="modal-btn primary" style="cursor: pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span>Import JSON File</span>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="importBackupJSON(event)">
+      </label>
 
       <button class="modal-btn danger" onclick="resetToSampleData()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1085,6 +1132,7 @@
        LIFECYCLE INITIALIZATION
        ========================================================================= */
     window.addEventListener('DOMContentLoaded', () => {
+      initPWA();
       loadState();
       buildCategoryPills();
       updateThemeCategoryUI();
@@ -1092,7 +1140,81 @@
       renderHistoryView();
       setupSwipeGestures();
       setupPhysicalKeyboard();
+      loadR2Config();
     });
+
+    /* =========================================================================
+       SELF-CONTAINED PWA & APP ICON INJECTION (Standalone Installability)
+       ========================================================================= */
+    function initPWA() {
+      // 1. Generate SVG Icon URI
+      const appIconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+          <rect width="512" height="512" rx="110" fill="#0c1220"/>
+          <circle cx="256" cy="256" r="190" fill="#131d31" stroke="#10b981" stroke-width="12"/>
+          <path d="M280 120 L160 280 h100 l-20 112 120 -160 h-100 z" fill="#10b981"/>
+          <text x="375" y="240" font-family="monospace" font-size="90" font-weight="900" fill="#38bdf8">£</text>
+        </svg>
+      `.trim();
+      const iconDataUri = 'data:image/svg+xml;utf8,' + encodeURIComponent(appIconSvg);
+
+      // Set icons
+      const favEl = document.getElementById('faviconLink');
+      if (favEl) favEl.href = iconDataUri;
+      const appleEl = document.getElementById('appleTouchIcon');
+      if (appleEl) appleEl.href = iconDataUri;
+
+      // 2. Generate and link inline Web Manifest for Android 'Add to Home Screen'
+      const manifest = {
+        name: "ThumbVault Expense Tracker",
+        short_name: "ThumbVault",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#0c1220",
+        theme_color: "#0c1220",
+        orientation: "portrait-primary",
+        description: "Mobile-first one-thumb expense tracker with Cloudflare R2 backup.",
+        icons: [
+          {
+            src: iconDataUri,
+            sizes: "192x192",
+            type: "image/svg+xml",
+            purpose: "any"
+          },
+          {
+            src: iconDataUri,
+            sizes: "512x512",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      const manifestEl = document.getElementById('manifestLink');
+      if (manifestEl) manifestEl.href = manifestUrl;
+
+      // 3. Register lightweight inline Service Worker to pass installability audits
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'thumbvault-v1';
+          self.addEventListener('install', (e) => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch((err) => {
+          // Graceful fallback if blob workers are restricted by origin
+          console.info('Service Worker registration note:', err.message);
+        });
+      }
+    }
 
     function loadState() {
       try {
@@ -1546,6 +1668,78 @@
       downloadAnchor.remove();
       closeModal();
       showToast('Exported JSON');
+    }
+
+    function importBackupJSON(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (Array.isArray(parsed)) {
+            expenses = parsed;
+            saveState();
+            renderTotals();
+            renderHistoryView();
+            closeModal();
+            showToast(`Imported ${expenses.length} records`);
+          } else {
+            showToast('Invalid backup file format');
+          }
+        } catch (err) {
+          showToast('Failed to parse JSON');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    function loadR2Config() {
+      try {
+        const url = localStorage.getItem('thumbvault_r2_url') || '';
+        const token = localStorage.getItem('thumbvault_r2_token') || '';
+        document.getElementById('r2EndpointInput').value = url;
+        document.getElementById('r2TokenInput').value = token;
+      } catch (e) {}
+    }
+
+    async function syncWithR2() {
+      const endpoint = document.getElementById('r2EndpointInput').value.trim();
+      const token = document.getElementById('r2TokenInput').value.trim();
+
+      if (!endpoint) {
+        showToast('Please enter an R2 API URL');
+        return;
+      }
+
+      localStorage.setItem('thumbvault_r2_url', endpoint);
+      localStorage.setItem('thumbvault_r2_token', token);
+
+      showToast('Syncing to Cloudflare R2...');
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-vault-key': token
+          },
+          body: JSON.stringify({
+            expenses,
+            lastSync: Date.now()
+          })
+        });
+
+        if (res.ok) {
+          showToast('Synced successfully with R2');
+          closeModal();
+        } else {
+          showToast(`Sync failed (Status ${res.status})`);
+        }
+      } catch (err) {
+        showToast('Network error during R2 sync');
+      }
     }
 
     function resetToSampleData() {
