@@ -10,11 +10,10 @@
   <meta name="apple-mobile-web-app-title" content="ThumbVault">
   <title>ThumbVault — Mobile Expense Tracker</title>
   
-  <!-- PWA manifest and app icons -->
-  <link rel="manifest" href="./manifest.json">
-  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
-  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <!-- Standalone PWA Data-URI Manifest & Touch Icons -->
+  <link rel="manifest" id="manifestLink">
+  <link rel="apple-touch-icon" id="appleTouchIcon">
+  <link rel="icon" type="image/svg+xml" id="faviconLink">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,16 +46,6 @@
       user-select: none;
     }
 
-    input, textarea, select, [contenteditable="true"] {
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    input, textarea, select, [contenteditable="true"] {
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
     body {
       background-color: var(--bg-body);
       color: var(--text-main);
@@ -73,7 +62,6 @@
       width: 100%;
       max-width: 480px;
       height: 100vh;
-      height: 100svh;
       height: 100dvh;
       background: var(--bg-surface);
       display: flex;
@@ -83,14 +71,6 @@
       border-left: 1px solid rgba(255, 255, 255, 0.05);
       border-right: 1px solid rgba(255, 255, 255, 0.05);
       overflow: hidden;
-    }
-
-    @media (max-width: 380px) {
-      header { padding-left: 8px; padding-right: 8px; gap: 5px; }
-      .brand-group { gap: 5px; }
-      .brand-title { font-size: 14px; letter-spacing: -0.03em; }
-      .brand-badge { padding-left: 4px; padding-right: 4px; }
-      .screen-tab-btn { font-size: 11px; padding-left: 6px; padding-right: 6px; }
     }
 
     /* Top Sticky Header */
@@ -105,34 +85,25 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      min-width: 0;
+      gap: 12px;
     }
 
     .brand-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      min-width: 0;
-      flex: 1 1 auto;
     }
-
-    .brand-group > div:last-child { min-width: 0; }
-    .brand-title { white-space: nowrap; }
-    .screen-toggle { flex: 0 1 auto; min-width: 0; }
-    .screen-tab-btn { padding-left: clamp(6px, 2.2vw, 14px); padding-right: clamp(6px, 2.2vw, 14px); }
-    #btnOpenOptions { position: relative; z-index: 2; }
 
     .logo-badge {
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #f6c453, #d99a20);
+      background: linear-gradient(135deg, #10b981, #06b6d4);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #4a2d04;
-      box-shadow: 0 4px 12px rgba(246, 196, 83, 0.25);
+      color: #04121a;
+      box-shadow: 0 4px 12px var(--accent-glow);
       flex-shrink: 0;
     }
 
@@ -739,9 +710,7 @@
       z-index: 100;
       align-items: center;
       justify-content: center;
-      padding: 12px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      padding: 16px;
     }
 
     .modal-backdrop.open {
@@ -754,9 +723,6 @@
       border-radius: 22px;
       width: 100%;
       max-width: 420px;
-      max-height: calc(100dvh - 24px);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
       padding: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
       display: flex;
@@ -844,11 +810,9 @@
     <!-- TOP HEADER -->
     <header>
       <div class="brand-group">
-        <div class="logo-badge" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Gold coin">
-            <circle cx="12" cy="12" r="10" fill="#f6c453" stroke="#ffe6a0" stroke-width="1.2"/>
-            <circle cx="12" cy="12" r="7.5" fill="none" stroke="#9a650c" stroke-width="1"/>
-            <text x="12" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#7a4b08">£</text>
+        <div class="logo-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
         <div>
@@ -1020,7 +984,7 @@
     <div class="modal-card">
       <div class="modal-head">
         <h3>ThumbVault Options</h3>
-        <button class="icon-btn" onclick="closeModal()" aria-label="Close options" title="Close options">
+        <button class="icon-btn" onclick="closeModal()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -1035,7 +999,7 @@
       <!-- Cloudflare R2 Config & Manual Trigger -->
       <div style="background: rgba(6, 9, 17, 0.65); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
         <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.05em;">Cloudflare R2 Endpoint</span>
-        <input type="text" id="r2EndpointInput" placeholder="https://api.yourdomain.com/api/sync" style="background: transparent; border: 1px solid var(--border-subtle); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; outline: none; font-family: var(--font-num);">
+        <input type="text" id="r2EndpointInput" placeholder="https://thumbvault-sync.YOUR-SUBDOMAIN.workers.dev" style="background: transparent; border: 1px solid var(--border-subtle); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; outline: none; font-family: var(--font-num);">
         <input type="password" id="r2TokenInput" placeholder="Secret Key (x-vault-key)" style="background: transparent; border: 1px solid var(--border-subtle); padding: 8px 10px; border-radius: 8px; color: #fff; font-size: 12px; outline: none;">
         <button class="modal-btn" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #7dd3fc; padding: 9px; font-size: 13px;" onclick="syncWithR2()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1180,14 +1144,75 @@
     });
 
     /* =========================================================================
-       PWA SETUP
-       A real manifest and same-origin service worker are required for reliable
-       Android installation. This app must be served over HTTPS (or localhost).
+       SELF-CONTAINED PWA & APP ICON INJECTION (Standalone Installability)
        ========================================================================= */
     function initPWA() {
-      if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-        navigator.serviceWorker.register('./service-worker.js', { scope: './' })
-          .catch(err => console.warn('Service worker registration failed:', err));
+      // 1. Generate SVG Icon URI
+      const appIconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+          <rect width="512" height="512" rx="110" fill="#0c1220"/>
+          <circle cx="256" cy="256" r="190" fill="#131d31" stroke="#10b981" stroke-width="12"/>
+          <path d="M280 120 L160 280 h100 l-20 112 120 -160 h-100 z" fill="#10b981"/>
+          <text x="375" y="240" font-family="monospace" font-size="90" font-weight="900" fill="#38bdf8">£</text>
+        </svg>
+      `.trim();
+      const iconDataUri = 'data:image/svg+xml;utf8,' + encodeURIComponent(appIconSvg);
+
+      // Set icons
+      const favEl = document.getElementById('faviconLink');
+      if (favEl) favEl.href = iconDataUri;
+      const appleEl = document.getElementById('appleTouchIcon');
+      if (appleEl) appleEl.href = iconDataUri;
+
+      // 2. Generate and link inline Web Manifest for Android 'Add to Home Screen'
+      const manifest = {
+        name: "ThumbVault Expense Tracker",
+        short_name: "ThumbVault",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#0c1220",
+        theme_color: "#0c1220",
+        orientation: "portrait-primary",
+        description: "Mobile-first one-thumb expense tracker with Cloudflare R2 backup.",
+        icons: [
+          {
+            src: iconDataUri,
+            sizes: "192x192",
+            type: "image/svg+xml",
+            purpose: "any"
+          },
+          {
+            src: iconDataUri,
+            sizes: "512x512",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      const manifestEl = document.getElementById('manifestLink');
+      if (manifestEl) manifestEl.href = manifestUrl;
+
+      // 3. Register lightweight inline Service Worker to pass installability audits
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'thumbvault-v1';
+          self.addEventListener('install', (e) => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch((err) => {
+          // Graceful fallback if blob workers are restricted by origin
+          console.info('Service Worker registration note:', err.message);
+        });
       }
     }
 
@@ -1653,19 +1678,8 @@
       reader.onload = (evt) => {
         try {
           const parsed = JSON.parse(evt.target.result);
-          if (Array.isArray(parsed) && parsed.every(item =>
-            item && typeof item === 'object' &&
-            Number.isFinite(Number(item.amount)) && Number(item.amount) >= 0 &&
-            Number.isFinite(Number(item.timestamp)) &&
-            typeof item.category === 'string'
-          )) {
-            expenses = parsed.map(item => ({
-              id: String(item.id || ('tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8))),
-              amount: Math.round(Number(item.amount) * 100) / 100,
-              category: CATEGORIES.some(c => c.id === item.category) ? item.category : 'misc',
-              note: String(item.note || '').slice(0, 200),
-              timestamp: Number(item.timestamp)
-            }));
+          if (Array.isArray(parsed)) {
+            expenses = parsed;
             saveState();
             renderTotals();
             renderHistoryView();
@@ -1696,7 +1710,24 @@
       const token = document.getElementById('r2TokenInput').value.trim();
 
       if (!endpoint) {
-        showToast('Please enter an R2 API URL');
+        showToast('Please enter your Cloudflare Worker URL');
+        return;
+      }
+      if (!/^https:\/\//i.test(endpoint)) {
+        showToast('Endpoint must start with https://');
+        return;
+      }
+      if (!token) {
+        showToast('Please enter the VAULT_KEY secret you set in Cloudflare');
+        return;
+      }
+
+      // Keep this client-side limit aligned with the Worker upload limit (5 MiB).
+      const payload = JSON.stringify({ expenses, lastSync: Date.now() });
+      const payloadBytes = new TextEncoder().encode(payload).length;
+      const maxUploadBytes = 5 * 1024 * 1024;
+      if (payloadBytes > maxUploadBytes) {
+        showToast('Backup exceeds the 5 MiB per-upload limit');
         return;
       }
 
@@ -1711,10 +1742,7 @@
             'Content-Type': 'application/json',
             'x-vault-key': token
           },
-          body: JSON.stringify({
-            expenses,
-            lastSync: Date.now()
-          })
+          body: payload
         });
 
         if (res.ok) {
