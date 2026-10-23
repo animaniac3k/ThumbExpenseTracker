@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>ThumbVault — Mobile Expense Tracker</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-body: #06090f;
+      --bg-surface: #0e1524;
+      --bg-card: #152035;
+      --bg-card-hover: #1b2842;
+      --border-subtle: #20304c;
+      --border-strong: #2f4469;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.28);
+      --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-num: 'JetBrains Mono', monospace;
+      --safe-bottom: env(safe-area-inset-bottom, 12px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      line-height: 1.4;
+      overflow-x: hidden;
+    }
+
+    /* Outer Shell: Fits mobile like a native app, centers cleanly on desktop */
+    .app-viewport {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.7);
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Top Sticky Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(14, 21, 36, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #04121a;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      letter-spacing: 0.03em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+      background: var(--border-subtle);
+      color: #ffffff;
+    }
+
+    /* Scrollable Upper Section: Summaries & History */
+    .top-scrollable {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 16px 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Glance Cards Grid */
+    .glance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .metric-card {
+      background: linear-gradient(180deg, var(--bg-card) 0%, rgba(21, 32, 53, 0.6) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--metric-accent, #3b82f6);
+      opacity: 0.8;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+    }
+
+    .metric-value {
+      font-family: var(--font-num);
+      font-size: clamp(20px, 5.2vw, 24px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin: 4px 0 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* History & Filter Row */
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-pills {
+      display: flex;
+      background: #090e19;
+      padding: 3px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      gap: 2px;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      background: var(--border-strong);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Transactions Feed */
+    .transactions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      min-height: 110px;
+      max-height: 230px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 5px solid var(--cat-color, #10b981);
+      transition: transform 0.15s ease, background 0.15s ease;
+      position: relative;
+    }
+
+    .tx-item:active {
+      background: var(--bg-card-hover);
+    }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .tx-icon-pill {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--cat-bg, rgba(16, 185, 129, 0.15));
+      color: var(--cat-color, #10b981);
+    }
+
+    .tx-meta {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .tx-category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--cat-color, #10b981);
+    }
+
+    .tx-note {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .tx-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-top: 1px;
+    }
+
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .tx-amount {
+      font-family: var(--font-num);
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .tx-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .tx-del-btn:active {
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.15);
+      opacity: 1;
+    }
+
+    .empty-state {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* BOTTOM HALF: Ergonomic One-Thumb Entry Deck */
+    .thumb-control-deck {
+      margin-top: auto;
+      background: #090e19;
+      border-top: 1px solid var(--border-strong);
+      border-radius: 28px 28px 0 0;
+      padding: 16px 16px calc(var(--safe-bottom) + 8px);
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Live Dial Display */
+    .display-screen {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .display-top-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+    }
+
+    .active-cat-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      color: var(--cat-color, #10b981);
+    }
+
+    .clear-text-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .clear-text-btn:active {
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.12);
+    }
+
+    .amount-hero {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      margin: 4px 0;
+    }
+
+    .currency-sign {
+      font-family: var(--font-num);
+      font-size: clamp(26px, 6.5vw, 32px);
+      font-weight: 800;
+      color: #34d399;
+      margin-right: 4px;
+    }
+
+    .amount-value {
+      font-family: var(--font-num);
+      font-size: clamp(42px, 11vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .note-input-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(9, 14, 25, 0.6);
+      border-radius: 10px;
+      padding: 6px 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .note-input-row input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    .note-input-row input::placeholder {
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* Category Pill Carousel */
+    .category-carousel {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .category-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-pill {
+      flex: 0 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 9px 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.15s ease;
+    }
+
+    .cat-pill .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cat-color);
+    }
+
+    .cat-pill.selected {
+      background: var(--cat-bg);
+      border-color: var(--cat-color);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* Large Numeric Thumb Keypad */
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .key-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-num);
+      font-size: 25px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+      transition: transform 0.08s ease, background 0.08s ease, filter 0.08s ease;
+    }
+
+    .key-btn:active {
+      transform: scale(0.93);
+      background: var(--border-strong);
+      filter: brightness(1.2);
+    }
+
+    .key-btn.backspace {
+      color: #fb7185;
+      font-size: 22px;
+    }
+
+    /* Big Submit Button */
+    .record-btn {
+      width: 100%;
+      height: 62px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: none;
+      color: #031e13;
+      font-family: var(--font-ui);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px var(--accent-glow);
+      transition: transform 0.08s ease, filter 0.08s ease;
+    }
+
+    .record-btn:active {
+      transform: scale(0.97);
+      filter: brightness(0.95);
+    }
+
+    /* Modal Sheet */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      padding: 22px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-head h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .modal-btn.primary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+    }
+
+    .modal-btn.primary:active {
+      background: var(--border-strong);
+    }
+
+    .modal-btn.danger {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #fda4af;
+    }
+
+    .modal-btn.danger:active {
+      background: rgba(244, 63, 94, 0.25);
+    }
+
+    .modal-btn.accent {
+      background: #10b981;
+      color: #042416;
+    }
+
+    /* Toast Alert */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--safe-bottom) + 90px);
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background: #1e293b;
+      border: 1px solid var(--border-strong);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    
+    <!-- TOP HEADER -->
+    <header>
+      <div class="brand-group">
+        <div class="logo-badge">
+          <!-- Lightning / Thumb Icon -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            ThumbVault
+            <span class="brand-badge">£ GBP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Settings / Data Modal Button -->
+        <button class="icon-btn" onclick="openModal()" title="Options & Backup" aria-label="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- UPPER HALF: METRICS & HISTORY -->
+    <div class="top-scrollable">
+      
+      <!-- GLANCE TOTALS: Today / This Week / This Month -->
+      <section class="glance-grid">
+        <div class="metric-card" style="--metric-accent: #10b981;">
+          <span class="metric-label">Today</span>
+          <div class="metric-value" id="valToday">£0.00</div>
+          <span class="metric-sub" id="countToday">0 items</span>
+        </div>
+
+        <div class="metric-card" style="--metric-accent: #38bdf8;">
+          <span class="metric-label">Week</span>
+          <div class="metric-value" id="valWeek">£0.00</div>
+          <span class="metric-sub">Mon - Sun</span>
+        </div>
+
+        <div class="metric-card" style="--metric-accent: #a855f7;">
+          <span class="metric-label">Month</span>
+          <div class="metric-value" id="valMonth">£0.00</div>
+          <span class="metric-sub" id="labelMonth">Oct</span>
+        </div>
+      </section>
+
+      <!-- HISTORY FEED HEADER & FILTERS -->
+      <div class="history-header">
+        <div class="section-title">
+          <span>Activity</span>
+          <span style="font-size: 12px; color: var(--text-dim); font-weight: 600;" id="feedCount">(0)</span>
+        </div>
+
+        <div class="filter-pills">
+          <button class="filter-btn active" onclick="applyFilter('all')" id="flt-all">All</button>
+          <button class="filter-btn" onclick="applyFilter('today')" id="flt-today">Today</button>
+          <button class="filter-btn" onclick="applyFilter('week')" id="flt-week">Week</button>
+          <button class="filter-btn" onclick="applyFilter('month')" id="flt-month">Month</button>
+        </div>
+      </div>
+
+      <!-- TRANSACTION FEED -->
+      <div class="transactions-list" id="txContainer">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="empty-state" id="emptyNotice" style="display: none;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+        <span>No expenses recorded for this period</span>
+      </div>
+
+    </div>
+
+    <!-- LOWER HALF: ERGONOMIC ONE-THUMB INPUT DECK -->
+    <div class="thumb-control-deck" id="inputDeck">
+      
+      <!-- Big Visual Dial -->
+      <div class="display-screen">
+        <div class="display-top-row">
+          <div class="active-cat-label" id="currentCatLabel">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--cat-color);"></span>
+            <span id="currentCatText">Coffee & Snacks</span>
+          </div>
+          <button class="clear-text-btn" onclick="clearInput()">CLEAR</button>
+        </div>
+
+        <div class="amount-hero">
+          <span class="currency-sign">£</span>
+          <span class="amount-value" id="activeAmountText">0</span>
+        </div>
+
+        <!-- Inline Quick Note Field -->
+        <div class="note-input-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          <input type="text" id="txNoteInput" placeholder="Add note (e.g., Pret Flat White, Sainsburys)..." maxlength="40">
+        </div>
+      </div>
+
+      <!-- Category Pills Carousel -->
+      <div class="category-carousel" id="catCarousel">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Tactile 3x4 Keypad -->
+      <div class="keypad-grid">
+        <button class="key-btn" onclick="pressDigit('1')">1</button>
+        <button class="key-btn" onclick="pressDigit('2')">2</button>
+        <button class="key-btn" onclick="pressDigit('3')">3</button>
+
+        <button class="key-btn" onclick="pressDigit('4')">4</button>
+        <button class="key-btn" onclick="pressDigit('5')">5</button>
+        <button class="key-btn" onclick="pressDigit('6')">6</button>
+
+        <button class="key-btn" onclick="pressDigit('7')">7</button>
+        <button class="key-btn" onclick="pressDigit('8')">8</button>
+        <button class="key-btn" onclick="pressDigit('9')">9</button>
+
+        <button class="key-btn" onclick="pressDigit('.')">.</button>
+        <button class="key-btn" onclick="pressDigit('0')">0</button>
+        <button class="key-btn backspace" onclick="pressBackspace()" aria-label="Backspace">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+            <line x1="18" y1="9" x2="12" y2="15"></line>
+            <line x1="12" y1="9" x2="18" y2="15"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Oversized Bottom Thumb Record Trigger -->
+      <button class="record-btn" id="recordTrigger" onclick="commitRecord()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+        </svg>
+        <span id="recordLabel">Record £0</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- SETTINGS & DATA MODAL -->
+  <div class="modal-backdrop" id="optionsModal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>ThumbVault Settings</h3>
+        <button class="icon-btn" onclick="closeModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted);">
+        All data is stored directly in your phone's browser cache (LocalStorage). Ready for GitHub Pages deployment.
+      </p>
+
+      <button class="modal-btn primary" onclick="exportBackupJSON()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Export Backup JSON
+      </button>
+
+      <button class="modal-btn danger" onclick="resetToSampleData()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        Reset to Sample Data
+      </button>
+
+      <button class="modal-btn danger" onclick="wipeAllData()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        Clear All Expenses
+      </button>
+
+      <button class="modal-btn accent" onclick="closeModal()">
+        Done
+      </button>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST -->
+  <div class="toast" id="toastBox">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toastMessage">Recorded</span>
+  </div>
+
+  <script>
+    /* =========================================================================
+       CATEGORY TAXONOMY & COLOR PALETTE
+       ========================================================================= */
+    const CATEGORIES = [
+      {
+        id: 'coffee',
+        label: 'Coffee & Snacks',
+        color: '#f59e0b', // Amber
+        bg: 'rgba(245, 158, 11, 0.16)',
+        svg: '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>'
+      },
+      {
+        id: 'food',
+        label: 'Food & Dining',
+        color: '#10b981', // Emerald
+        bg: 'rgba(16, 185, 129, 0.16)',
+        svg: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>'
+      },
+      {
+        id: 'groceries',
+        label: 'Groceries',
+        color: '#06b6d4', // Cyan
+        bg: 'rgba(6, 182, 212, 0.16)',
+        svg: '<circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>'
+      },
+      {
+        id: 'transit',
+        label: 'Transit',
+        color: '#3b82f6', // Blue
+        bg: 'rgba(59, 130, 246, 0.16)',
+        svg: '<rect x="3" y="3" width="18" height="15" rx="3"></rect><path d="M3 11h18"></path><path d="M6 18l-2 3"></path><path d="M18 18l2 3"></path>'
+      },
+      {
+        id: 'shopping',
+        label: 'Shopping',
+        color: '#ec4899', // Pink
+        bg: 'rgba(236, 72, 153, 0.16)',
+        svg: '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>'
+      },
+      {
+        id: 'bills',
+        label: 'Bills & Utilities',
+        color: '#a855f7', // Purple
+        bg: 'rgba(168, 85, 247, 0.16)',
+        svg: '<rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line>'
+      },
+      {
+        id: 'misc',
+        label: 'Misc',
+        color: '#94a3b8', // Slate
+        bg: 'rgba(148, 163, 184, 0.16)',
+        svg: '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+      }
+    ];
+
+    /* =========================================================================
+       STATE MANAGEMENT
+       ========================================================================= */
+    const STORAGE_KEY = 'thumbvault_expenses_v1';
+    let expenses = [];
+    let activeInputStr = '0';
+    let selectedCatId = 'coffee';
+    let activeFilter = 'all';
+
+    /* =========================================================================
+       LIFECYCLE INITIALIZATION
+       ========================================================================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      buildCategoryPills();
+      updateThemeCategoryUI();
+      renderTotals();
+      renderFeed();
+      setupKeyboardSupport();
+    });
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          expenses = JSON.parse(raw);
+        } else {
+          populateSampleData();
+        }
+      } catch (e) {
+        populateSampleData();
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+      } catch (e) {
+        console.warn('Storage quota exceeded or unavailable');
+      }
+    }
+
+    function populateSampleData() {
+      const now = Date.now();
+      const hour = 3600000;
+      expenses = [
+        { id: 'tx_1', amount: 3.85, category: 'coffee', note: 'Flat White & Croissant', timestamp: now - hour * 1 },
+        { id: 'tx_2', amount: 12.50, category: 'food', note: 'Pret Lunch with Dan', timestamp: now - hour * 4 },
+        { id: 'tx_3', amount: 3.40, category: 'transit', note: 'Underground Tube fare', timestamp: now - hour * 7 },
+        { id: 'tx_4', amount: 28.60, category: 'groceries', note: 'M&S Essentials', timestamp: now - hour * 26 },
+        { id: 'tx_5', amount: 15.99, category: 'shopping', note: 'Audio cable from Argos', timestamp: now - hour * 54 }
+      ];
+      saveState();
+    }
+
+    /* =========================================================================
+       KEYPAD & ONE-THUMB INPUT ENGINE
+       ========================================================================= */
+    function pressDigit(char) {
+      triggerHaptic();
+
+      if (activeInputStr === '0' && char !== '.') {
+        activeInputStr = char;
+      } else {
+        if (char === '.' && activeInputStr.includes('.')) return;
+        
+        // Disallow more than 2 decimal places
+        if (activeInputStr.includes('.')) {
+          const decimals = activeInputStr.split('.')[1];
+          if (decimals && decimals.length >= 2) return;
+        }
+
+        // Cap input length
+        if (activeInputStr.replace('.', '').length >= 7) return;
+
+        activeInputStr += char;
+      }
+
+      refreshInputDisplay();
+    }
+
+    function pressBackspace() {
+      triggerHaptic();
+      if (activeInputStr.length <= 1) {
+        activeInputStr = '0';
+      } else {
+        activeInputStr = activeInputStr.slice(0, -1);
+      }
+      refreshInputDisplay();
+    }
+
+    function clearInput() {
+      triggerHaptic();
+      activeInputStr = '0';
+      document.getElementById('txNoteInput').value = '';
+      refreshInputDisplay();
+    }
+
+    function refreshInputDisplay() {
+      document.getElementById('activeAmountText').textContent = activeInputStr;
+      
+      const num = parseFloat(activeInputStr) || 0;
+      const formatted = num % 1 === 0 ? num.toString() : num.toFixed(2);
+      document.getElementById('recordLabel').textContent = `Record £${num > 0 ? formatted : '0'}`;
+    }
+
+    function triggerHaptic() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(12);
+      }
+    }
+
+    /* =========================================================================
+       CATEGORY SELECTOR
+       ========================================================================= */
+    function buildCategoryPills() {
+      const container = document.getElementById('catCarousel');
+      container.innerHTML = '';
+
+      CATEGORIES.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `cat-pill ${cat.id === selectedCatId ? 'selected' : ''}`;
+        btn.style.setProperty('--cat-color', cat.color);
+        btn.style.setProperty('--cat-bg', cat.bg);
+        btn.onclick = () => selectCategory(cat.id);
+        
+        btn.innerHTML = `
+          <span class="pill-dot"></span>
+          <span>${cat.label}</span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function selectCategory(id) {
+      triggerHaptic();
+      selectedCatId = id;
+      buildCategoryPills();
+      updateThemeCategoryUI();
+    }
+
+    function updateThemeCategoryUI() {
+      const cat = CATEGORIES.find(c => c.id === selectedCatId) || CATEGORIES[0];
+      const deck = document.getElementById('inputDeck');
+      deck.style.setProperty('--cat-color', cat.color);
+      deck.style.setProperty('--cat-bg', cat.bg);
+      
+      document.getElementById('currentCatText').textContent = cat.label;
+    }
+
+    /* =========================================================================
+       TRANSACTION COMMIT & REMOVAL
+       ========================================================================= */
+    function commitRecord() {
+      const amountVal = parseFloat(activeInputStr);
+      if (!amountVal || amountVal <= 0) {
+        showToast('Please tap an amount first');
+        triggerHaptic();
+        return;
+      }
+
+      const noteRaw = document.getElementById('txNoteInput').value.trim();
+      const catObj = CATEGORIES.find(c => c.id === selectedCatId);
+
+      const newTx = {
+        id: 'tx_' + Date.now(),
+        amount: Math.round(amountVal * 100) / 100,
+        category: selectedCatId,
+        note: noteRaw || catObj.label,
+        timestamp: Date.now()
+      };
+
+      expenses.unshift(newTx);
+      saveState();
+
+      // Reset dial
+      activeInputStr = '0';
+      document.getElementById('txNoteInput').value = '';
+      refreshInputDisplay();
+
+      // Refresh Views
+      renderTotals();
+      renderFeed();
+      triggerHaptic();
+      showToast(`Recorded £${newTx.amount.toFixed(2)} in ${catObj.label}`);
+    }
+
+    function removeTx(id) {
+      triggerHaptic();
+      const target = expenses.find(x => x.id === id);
+      expenses = expenses.filter(x => x.id !== id);
+      saveState();
+      renderTotals();
+      renderFeed();
+      if (target) {
+        showToast(`Removed £${target.amount.toFixed(2)}`);
+      }
+    }
+
+    /* =========================================================================
+       CALCULATIONS: AT-A-GLANCE TOTALS
+       ========================================================================= */
+    function renderTotals() {
+      const now = new Date();
+      
+      // Start of Today (local time)
+      const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+      // Start of Week (Monday as first day)
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      const startWeek = new Date(now.getFullYear(), now.getMonth(), diff).setHours(0, 0, 0, 0);
+
+      // Start of Month
+      const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+      let sumToday = 0;
+      let countToday = 0;
+      let sumWeek = 0;
+      let sumMonth = 0;
+
+      expenses.forEach(item => {
+        const t = item.timestamp;
+        const val = item.amount;
+        if (t >= startToday) {
+          sumToday += val;
+          countToday++;
+        }
+        if (t >= startWeek) {
+          sumWeek += val;
+        }
+        if (t >= startMonth) {
+          sumMonth += val;
+        }
+      });
+
+      document.getElementById('valToday').textContent = `£${sumToday.toFixed(2)}`;
+      document.getElementById('countToday').textContent = `${countToday} ${countToday === 1 ? 'item' : 'items'}`;
+      document.getElementById('valWeek').textContent = `£${sumWeek.toFixed(2)}`;
+      document.getElementById('valMonth').textContent = `£${sumMonth.toFixed(2)}`;
+      
+      const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      document.getElementById('labelMonth').textContent = monthNames[now.getMonth()];
+    }
+
+    /* =========================================================================
+       TRANSACTION FEED & FILTERS
+       ========================================================================= */
+    function applyFilter(flt) {
+      activeFilter = flt;
+      ['all', 'today', 'week', 'month'].forEach(f => {
+        const el = document.getElementById('flt-' + f);
+        if (el) el.classList.toggle('active', f === flt);
+      });
+      renderFeed();
+    }
+
+    function renderFeed() {
+      const container = document.getElementById('txContainer');
+      const empty = document.getElementById('emptyNotice');
+      container.innerHTML = '';
+
+      const now = new Date();
+      const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      const startWeek = new Date(now.getFullYear(), now.getMonth(), diff).setHours(0, 0, 0, 0);
+      
+      const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+      const filtered = expenses.filter(item => {
+        if (activeFilter === 'today') return item.timestamp >= startToday;
+        if (activeFilter === 'week') return item.timestamp >= startWeek;
+        if (activeFilter === 'month') return item.timestamp >= startMonth;
+        return true;
+      });
+
+      document.getElementById('feedCount').textContent = `(${filtered.length})`;
+
+      if (filtered.length === 0) {
+        empty.style.display = 'flex';
+        return;
+      }
+      empty.style.display = 'none';
+
+      filtered.forEach(tx => {
+        const cat = CATEGORIES.find(c => c.id === tx.category) || CATEGORIES[6];
+        const dateObj = new Date(tx.timestamp);
+        const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateStr = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+        const item = document.createElement('div');
+        item.className = 'tx-item';
+        item.style.setProperty('--cat-color', cat.color);
+        item.style.setProperty('--cat-bg', cat.bg);
+
+        item.innerHTML = `
+          <div class="tx-left">
+            <div class="tx-icon-pill">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                ${cat.svg}
+              </svg>
+            </div>
+            <div class="tx-meta">
+              <span class="tx-category-badge">${cat.label}</span>
+              <span class="tx-note">${escapeHTML(tx.note)}</span>
+              <span class="tx-time">${dateStr} • ${timeStr}</span>
+            </div>
+          </div>
+
+          <div class="tx-right">
+            <span class="tx-amount">£${tx.amount.toFixed(2)}</span>
+            <button class="tx-del-btn" onclick="removeTx('${tx.id}')" aria-label="Delete entry" title="Delete">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function escapeHTML(str) {
+      const d = document.createElement('div');
+      d.textContent = str || '';
+      return d.innerHTML;
+    }
+
+    /* =========================================================================
+       MODAL & UTILITY FUNCTIONS
+       ========================================================================= */
+    function openModal() {
+      document.getElementById('optionsModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('optionsModal').classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target.id === 'optionsModal') {
+        closeModal();
+      }
+    }
+
+    function exportBackupJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(expenses, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `thumbvault_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      closeModal();
+      showToast('Backup JSON downloaded');
+    }
+
+    function resetToSampleData() {
+      populateSampleData();
+      renderTotals();
+      renderFeed();
+      closeModal();
+      showToast('Restored sample mock data');
+    }
+
+    function wipeAllData() {
+      expenses = [];
+      saveState();
+      renderTotals();
+      renderFeed();
+      closeModal();
+      showToast('All data erased');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2400);
+    }
+
+    function setupKeyboardSupport() {
+      window.addEventListener('keydown', (e) => {
+        if (document.activeElement.tagName === 'INPUT') return;
+        if (e.key >= '0' && e.key <= '9') {
+          pressDigit(e.key);
+        } else if (e.key === '.') {
+          pressDigit('.');
+        } else if (e.key === 'Backspace') {
+          pressBackspace();
+        } else if (e.key === 'Enter') {
+          commitRecord();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
