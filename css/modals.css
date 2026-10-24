@@ -167,6 +167,34 @@
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
 }
 
+.month-start-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 1px solid rgba(42, 61, 96, 0.45);
+}
+
+.month-start-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: #ffffff;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 10px;
+  outline: none;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+.month-start-select:focus {
+  border-color: #10b981;
+}
+
 /* R2 Cloud Sync Panel */
 .r2-panel {
   background: rgba(6, 9, 17, 0.65);

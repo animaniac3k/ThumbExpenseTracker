@@ -270,9 +270,9 @@
     <text x="290" y="142" font-size="11" fill="#cbd5e1">  reappearing during R2 Smart Sync</text>
 
     <rect x="530" y="48" width="240" height="110" rx="12" fill="#08111d" stroke="#1e2c45"/>
-    <text x="544" y="70" font-size="12" font-weight="800" fill="#f6c453" font-family="monospace">currencySymbol &amp; CATEGORIES</text>
-    <text x="544" y="90" font-size="11" fill="#cbd5e1">• Configurable currency: £, $, €, ¥,</text>
-    <text x="544" y="106" font-size="11" fill="#cbd5e1">  ₹, kr, CHF via setCurrencySymbol()</text>
+    <text x="544" y="70" font-size="12" font-weight="800" fill="#f6c453" font-family="monospace">Preferences &amp; CATEGORIES</text>
+    <text x="544" y="90" font-size="11" fill="#cbd5e1">• Currency: £, $, €, ¥, ₹, kr, CHF</text>
+    <text x="544" y="106" font-size="11" fill="#cbd5e1">• Month Start Day: 1st–31st cycle</text>
     <text x="544" y="124" font-size="11" fill="#cbd5e1">• 7 Categories with color, bg &amp; SVG</text>
     <text x="544" y="140" font-size="11" fill="#cbd5e1">  (Coffee, Food, Groceries, Transit...)</text>
 
@@ -323,8 +323,8 @@
     <text x="215" y="86" font-size="11" fill="#cbd5e1">→ JSON array of expenses</text>
     <text x="30" y="106" font-size="11" font-weight="700" fill="#fb7185" font-family="monospace">thumbvault_deleted_v2</text>
     <text x="215" y="106" font-size="11" fill="#cbd5e1">→ Deletion tombstone map</text>
-    <text x="30" y="126" font-size="11" font-weight="700" fill="#f6c453" font-family="monospace">thumbvault_currency</text>
-    <text x="215" y="126" font-size="11" fill="#cbd5e1">→ Active symbol (£, $, €...)</text>
+    <text x="30" y="126" font-size="11" font-weight="700" fill="#f6c453" font-family="monospace">thumbvault_currency / _month</text>
+    <text x="215" y="126" font-size="11" fill="#cbd5e1">→ Symbol &amp; cycle start day</text>
     <text x="30" y="146" font-size="11" font-weight="700" fill="#38bdf8" font-family="monospace">thumbvault_r2_url / _token</text>
     <text x="215" y="146" font-size="11" fill="#cbd5e1">→ Worker endpoint &amp; key</text>
     <text x="30" y="164" font-size="11" font-weight="700" fill="#c084fc" font-family="monospace">thumbvault_last_sync</text>

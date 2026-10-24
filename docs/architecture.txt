@@ -90,12 +90,13 @@ A. Bootstrapping & Offline PWA Layer (`js/app.js` <-> `service-worker.js` <-> `m
      the app launches instantaneously without a network connection.
 
 B. State & Local Storage Layer (`js/state.js` <-> `window.localStorage`)
-   - `js/state.js` acts as the single source of truth using four `localStorage` keys:
+   - `js/state.js` acts as the single source of truth using five `localStorage` keys:
      * `thumbvault_expenses_v2`: Array of expense objects:
        `{ id, amount, category, note, timestamp, updatedAt }`
      * `thumbvault_deleted_v2`: Map of deleted transaction IDs to deletion timestamps:
        `{ [txId]: deletedAtTimestamp }` (tombstones used during multi-device R2 sync)
      * `thumbvault_currency`: User-selected currency symbol (`£`, `$`, `€`, `¥`, etc.)
+     * `thumbvault_month_start_day`: Custom monthly cycle start day (`1`–`31`, e.g. 7th or 16th)
      * `thumbvault_last_sync`: Timestamp of the most recent Cloudflare R2 sync
    - Every create, edit, delete, undo, or sync operation calls `saveState()`, which
      sorts `expenses` chronologically (`b.timestamp - a.timestamp`) and writes to

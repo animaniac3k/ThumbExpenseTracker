@@ -154,7 +154,13 @@ function renderTotals() {
   document.getElementById('valMonth').textContent = `${currencySymbol}${sumMonth.toFixed(2)}`;
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  document.getElementById('labelMonth').textContent = monthNames[now.getMonth()];
+  const monthStartObj = new Date(startMonth);
+  const labelMonthEl = document.getElementById('labelMonth');
+  if (labelMonthEl) {
+    labelMonthEl.textContent = monthStartDay === 1
+      ? monthNames[now.getMonth()]
+      : `From ${monthStartObj.getDate()} ${monthNames[monthStartObj.getMonth()]}`;
+  }
 
   const histCountEl = document.getElementById('historyPillCount');
   if (histCountEl) {

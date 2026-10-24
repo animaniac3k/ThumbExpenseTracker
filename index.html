@@ -274,13 +274,20 @@
         Records stay directly on this device. Sync across devices or backup with Cloudflare R2.
       </p>
 
-      <!-- Currency Symbol Selector -->
+      <!-- Preferences: Currency Symbol & Month Start Day -->
       <div class="currency-panel">
         <div class="currency-panel-header">
           <span class="currency-panel-title">Currency Symbol</span>
         </div>
         <div class="currency-pills" id="currencyPillsContainer">
           <!-- Rendered dynamically -->
+        </div>
+
+        <div class="month-start-row">
+          <label class="currency-panel-title" for="monthStartDaySelect">Month Starts On</label>
+          <select id="monthStartDaySelect" class="month-start-select" onchange="setMonthStartDay(this.value)">
+            <!-- Populated dynamically (1st .. 31st) -->
+          </select>
         </div>
       </div>
 

@@ -57,11 +57,13 @@ const STORAGE_KEY = 'thumbvault_expenses_v2';
 const DELETED_KEY = 'thumbvault_deleted_v2';
 const LAST_SYNC_KEY = 'thumbvault_last_sync';
 const CURRENCY_KEY = 'thumbvault_currency';
+const MONTH_START_KEY = 'thumbvault_month_start_day';
 const CURRENCY_OPTIONS = ['£', '$', '€', '¥', '₹', 'kr', 'CHF'];
 
 let expenses = [];
 let deletedMap = {}; // { [txId]: deletedTimestamp } for multi-device 2-way sync
 let currencySymbol = '£';
+let monthStartDay = 1; // 1..31 custom billing/month cycle start day
 let currentScreenIdx = 0; // 0 = Capture, 1 = History
 let activeInputStr = '0';
 let selectedCatId = 'coffee';
@@ -95,6 +97,15 @@ function loadState() {
     }
   } catch (e) {
     currencySymbol = '£';
+  }
+
+  try {
+    const savedStartDay = parseInt(localStorage.getItem(MONTH_START_KEY), 10);
+    if (Number.isFinite(savedStartDay) && savedStartDay >= 1 && savedStartDay <= 31) {
+      monthStartDay = savedStartDay;
+    }
+  } catch (e) {
+    monthStartDay = 1;
   }
 
   try {
@@ -167,6 +178,46 @@ function renderCurrencySelector() {
     btn.onclick = () => setCurrencySymbol(sym);
     container.appendChild(btn);
   });
+
+  populateMonthStartSelect();
+}
+
+function getOrdinalSuffix(n) {
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 13) return `${n}th`;
+  switch (n % 10) {
+    case 1: return `${n}st`;
+    case 2: return `${n}nd`;
+    case 3: return `${n}rd`;
+    default: return `${n}th`;
+  }
+}
+
+function populateMonthStartSelect() {
+  const select = document.getElementById('monthStartDaySelect');
+  if (!select) return;
+  if (select.options.length === 0) {
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement('option');
+      opt.value = String(d);
+      opt.textContent = d === 1 ? '1st of month (Default)' : `${getOrdinalSuffix(d)} of month`;
+      select.appendChild(opt);
+    }
+  }
+  select.value = String(monthStartDay);
+}
+
+function setMonthStartDay(val) {
+  const parsed = parseInt(val, 10);
+  if (!Number.isFinite(parsed) || parsed < 1 || parsed > 31) return;
+  triggerHaptic(10);
+  monthStartDay = parsed;
+  try {
+    localStorage.setItem(MONTH_START_KEY, String(monthStartDay));
+  } catch (e) {}
+  renderTotals();
+  renderHistoryView();
+  showToast(`Month cycle starts on the ${getOrdinalSuffix(monthStartDay)}`);
 }
 
 function saveState() {
@@ -194,13 +245,32 @@ function populateSampleData() {
   saveState();
 }
 
+function getEffectiveDayInMonth(year, monthIndex, targetDay) {
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  return Math.min(targetDay, daysInMonth);
+}
+
 function getTimeBoundaries() {
   const now = new Date();
   const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const day = now.getDay();
   const diff = now.getDate() - day + (day === 0 ? -6 : 1);
   const startWeek = new Date(now.getFullYear(), now.getMonth(), diff).setHours(0, 0, 0, 0);
-  const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+  const curYear = now.getFullYear();
+  const curMonth = now.getMonth();
+  const curBoundaryDay = getEffectiveDayInMonth(curYear, curMonth, monthStartDay);
+
+  let startMonth;
+  if (now.getDate() >= curBoundaryDay) {
+    startMonth = new Date(curYear, curMonth, curBoundaryDay).getTime();
+  } else {
+    const prevYear = curMonth === 0 ? curYear - 1 : curYear;
+    const prevMonth = curMonth === 0 ? 11 : curMonth - 1;
+    const prevBoundaryDay = getEffectiveDayInMonth(prevYear, prevMonth, monthStartDay);
+    startMonth = new Date(prevYear, prevMonth, prevBoundaryDay).getTime();
+  }
+
   return { now, startToday, startWeek, startMonth };
 }
 
