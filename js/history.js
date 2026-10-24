@@ -52,7 +52,7 @@ function renderHistoryView() {
   }
   const sumLabel = document.getElementById('filteredSumLabel');
   if (sumLabel) {
-    sumLabel.textContent = `£${totalFilteredSum.toFixed(2)}`;
+    sumLabel.textContent = `${currencySymbol}${totalFilteredSum.toFixed(2)}`;
   }
 
   if (filtered.length === 0) {
@@ -104,7 +104,7 @@ function renderHistoryView() {
       </div>
 
       <div class="tx-right">
-        <span class="tx-amount">£${tx.amount.toFixed(2)}</span>
+        <span class="tx-amount">${currencySymbol}${tx.amount.toFixed(2)}</span>
         <button type="button" class="tx-action-btn" aria-label="Edit entry" title="Edit">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 20h9"></path>
@@ -208,7 +208,7 @@ function removeTx(id) {
   renderTotals();
   renderHistoryView();
 
-  showToast(`Removed £${backupItem.amount.toFixed(2)}`, () => {
+  showToast(`Removed ${currencySymbol}${backupItem.amount.toFixed(2)}`, () => {
     delete deletedMap[backupItem.id];
     expenses.push(backupItem);
     saveState();

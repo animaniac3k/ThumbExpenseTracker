@@ -46,7 +46,7 @@ function refreshInputDisplay() {
   const num = parseFloat(activeInputStr) || 0;
   const formatted = num % 1 === 0 ? num.toString() : num.toFixed(2);
   const recLabel = document.getElementById('recordLabel');
-  if (recLabel) recLabel.textContent = `Record £${num > 0 ? formatted : '0'}`;
+  if (recLabel) recLabel.textContent = `Record ${currencySymbol}${num > 0 ? formatted : '0'}`;
 }
 
 function commitRecord() {
@@ -83,7 +83,7 @@ function commitRecord() {
   renderTotals();
   renderHistoryView();
   triggerHaptic([15, 60, 15]);
-  showToast(`Recorded £${newTx.amount.toFixed(2)} in ${catObj.label}`);
+  showToast(`Recorded ${currencySymbol}${newTx.amount.toFixed(2)} in ${catObj.label}`);
 }
 
 function buildCategoryPills() {
@@ -148,10 +148,10 @@ function renderTotals() {
     }
   });
 
-  document.getElementById('valToday').textContent = `£${sumToday.toFixed(2)}`;
+  document.getElementById('valToday').textContent = `${currencySymbol}${sumToday.toFixed(2)}`;
   document.getElementById('countToday').textContent = `${countToday} ${countToday === 1 ? 'item' : 'items'}`;
-  document.getElementById('valWeek').textContent = `£${sumWeek.toFixed(2)}`;
-  document.getElementById('valMonth').textContent = `£${sumMonth.toFixed(2)}`;
+  document.getElementById('valWeek').textContent = `${currencySymbol}${sumWeek.toFixed(2)}`;
+  document.getElementById('valMonth').textContent = `${currencySymbol}${sumMonth.toFixed(2)}`;
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   document.getElementById('labelMonth').textContent = monthNames[now.getMonth()];

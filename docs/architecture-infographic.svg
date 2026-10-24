@@ -1,0 +1,362 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1060" width="1400" height="1060" font-family="'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <!-- Background & Card Gradients -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050811"/>
+      <stop offset="50%" stop-color="#0c1220"/>
+      <stop offset="100%" stop-color="#070b14"/>
+    </linearGradient>
+
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#131d31"/>
+      <stop offset="50%" stop-color="#17253f"/>
+      <stop offset="100%" stop-color="#131d31"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#131d31"/>
+      <stop offset="100%" stop-color="#0d1526"/>
+    </linearGradient>
+
+    <linearGradient id="stateGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f2922"/>
+      <stop offset="100%" stop-color="#0c1c2c"/>
+    </linearGradient>
+
+    <linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c2238"/>
+      <stop offset="100%" stop-color="#0b1629"/>
+    </linearGradient>
+
+    <!-- Arrow Markers -->
+    <marker id="arrowEmerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#a855f7"/>
+    </marker>
+
+    <filter id="softShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Main Canvas Background -->
+  <rect width="1400" height="1060" fill="url(#bgGrad)"/>
+
+  <!-- Subtle Grid Lines -->
+  <g stroke="#1e2c45" stroke-width="0.5" opacity="0.35">
+    <line x1="0" y1="110" x2="1400" y2="110"/>
+    <line x1="0" y1="320" x2="1400" y2="320"/>
+    <line x1="0" y1="560" x2="1400" y2="560"/>
+    <line x1="0" y1="810" x2="1400" y2="810"/>
+    <line x1="350" y1="110" x2="350" y2="1060"/>
+    <line x1="700" y1="110" x2="700" y2="1060"/>
+    <line x1="1050" y1="110" x2="1050" y2="1060"/>
+  </g>
+
+  <!-- =======================================================================
+       TOP BANNER / INFOGRAPHIC HEADER
+       ======================================================================= -->
+  <rect x="24" y="18" width="1352" height="76" rx="18" fill="url(#headerGrad)" stroke="#2a3d60" stroke-width="1.5" filter="url(#softShadow)"/>
+
+  <!-- Gold Coin App Icon -->
+  <g transform="translate(44, 31)">
+    <rect width="50" height="50" rx="12" fill="#0c1220" stroke="#2a3d60" stroke-width="1"/>
+    <circle cx="25" cy="25" r="19" fill="#f6c453" stroke="#ffe6a0" stroke-width="1.5"/>
+    <circle cx="25" cy="25" r="14.5" fill="none" stroke="#7a4b08" stroke-width="1"/>
+    <text x="25" y="32" text-anchor="middle" font-size="22" font-weight="900" fill="#6f4714">£</text>
+  </g>
+
+  <text x="110" y="52" font-size="24" font-weight="800" fill="#ffffff" letter-spacing="-0.5">ThumbVault — High-Level System Architecture</text>
+  <text x="110" y="75" font-size="13" font-weight="600" fill="#94a3b8">Offline-First Mobile PWA • Modular HTML / CSS / JS • LocalStorage Persistence • Cloudflare R2 2-Way Sync</text>
+
+  <!-- Legend Pills on Right of Header -->
+  <g transform="translate(815, 38)">
+    <rect x="0" y="0" width="128" height="36" rx="10" fill="#0c1220" stroke="#10b981" stroke-width="1.2"/>
+    <circle cx="18" cy="18" r="5" fill="#10b981"/>
+    <text x="30" y="22" font-size="11" font-weight="700" fill="#e2e8f0">State &amp; Data</text>
+
+    <rect x="138" y="0" width="128" height="36" rx="10" fill="#0c1220" stroke="#38bdf8" stroke-width="1.2"/>
+    <circle cx="156" cy="18" r="5" fill="#38bdf8"/>
+    <text x="168" y="22" font-size="11" font-weight="700" fill="#e2e8f0">Cloud &amp; PWA</text>
+
+    <rect x="276" y="0" width="128" height="36" rx="10" fill="#0c1220" stroke="#f59e0b" stroke-width="1.2"/>
+    <circle cx="294" cy="18" r="5" fill="#f59e0b"/>
+    <text x="306" y="22" font-size="11" font-weight="700" fill="#e2e8f0">UI &amp; Gestures</text>
+
+    <rect x="414" y="0" width="128" height="36" rx="10" fill="#0c1220" stroke="#a855f7" stroke-width="1.2"/>
+    <circle cx="432" cy="18" r="5" fill="#a855f7"/>
+    <text x="444" y="22" font-size="11" font-weight="700" fill="#e2e8f0">Stylesheets</text>
+  </g>
+
+  <!-- =======================================================================
+       TIER 1: ENTRY SHELL, PWA MANIFEST & MODULAR CSS (Y: 118 -> 295)
+       ======================================================================= -->
+  <text x="34" y="136" font-size="11" font-weight="800" fill="#64748b" letter-spacing="1.5">TIER 1 — APPLICATION SHELL, PWA ASSETS &amp; MODULAR STYLESHEETS</text>
+
+  <!-- PWA Manifest & Icons Box -->
+  <g transform="translate(30, 148)" filter="url(#softShadow)">
+    <rect width="310" height="145" rx="16" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="0" y="0" width="310" height="6" rx="3" fill="#38bdf8"/>
+    <text x="18" y="30" font-size="15" font-weight="800" fill="#ffffff">PWA Manifest &amp; App Icons</text>
+    <text x="18" y="48" font-size="11" font-weight="700" fill="#38bdf8" font-family="monospace">manifest.json • icons/*</text>
+    <text x="18" y="72" font-size="12" fill="#cbd5e1">• Standalone mobile viewport config</text>
+    <text x="18" y="92" font-size="12" fill="#cbd5e1">• icons/icon.svg (Vector + Header Logo)</text>
+    <text x="18" y="112" font-size="12" fill="#cbd5e1">• icons/icon-192.png (Home Screen Icon)</text>
+    <text x="18" y="132" font-size="12" fill="#cbd5e1">• icons/icon-512.png (Splash &amp; Maskable)</text>
+  </g>
+
+  <!-- index.html Central DOM Shell -->
+  <g transform="translate(380, 148)" filter="url(#softShadow)">
+    <rect width="480" height="145" rx="16" fill="url(#cardGrad)" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="0" y="0" width="480" height="6" rx="3" fill="#f59e0b"/>
+    <text x="20" y="30" font-size="16" font-weight="800" fill="#ffffff">DOM Shell &amp; Views Container</text>
+    <text x="295" y="30" font-size="12" font-weight="800" fill="#f59e0b" font-family="monospace">index.html</text>
+
+    <!-- Sub-boxes inside index.html -->
+    <rect x="18" y="44" width="140" height="86" rx="10" fill="#090e1a" stroke="#2a3d60"/>
+    <text x="88" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#f8fafc">Sticky Header</text>
+    <text x="88" y="82" text-anchor="middle" font-size="10" fill="#94a3b8">Logo Badge (icon.svg)</text>
+    <text x="88" y="98" text-anchor="middle" font-size="10" fill="#94a3b8">Capture / History Tabs</text>
+    <text x="88" y="114" text-anchor="middle" font-size="10" fill="#34d399">Gear Button (42×42px)</text>
+
+    <rect x="170" y="44" width="140" height="86" rx="10" fill="#090e1a" stroke="#2a3d60"/>
+    <text x="240" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#f8fafc">Dual-Screen Slider</text>
+    <text x="240" y="82" text-anchor="middle" font-size="10" fill="#94a3b8">#screenCapture (Pane 0)</text>
+    <text x="240" y="98" text-anchor="middle" font-size="10" fill="#94a3b8">#screenHistory (Pane 1)</text>
+    <text x="240" y="114" text-anchor="middle" font-size="10" fill="#f59e0b">Touch Swipe Navigation</text>
+
+    <rect x="322" y="44" width="140" height="86" rx="10" fill="#090e1a" stroke="#2a3d60"/>
+    <text x="392" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#f8fafc">Modals &amp; Toast</text>
+    <text x="392" y="82" text-anchor="middle" font-size="10" fill="#94a3b8">#editModal (Edit Entry)</text>
+    <text x="392" y="98" text-anchor="middle" font-size="10" fill="#94a3b8">#optionsModal (Settings)</text>
+    <text x="392" y="114" text-anchor="middle" font-size="10" fill="#34d399">#toastBox (+ Undo Btn)</text>
+  </g>
+
+  <!-- Modular CSS Box -->
+  <g transform="translate(900, 148)" filter="url(#softShadow)">
+    <rect width="470" height="145" rx="16" fill="url(#cardGrad)" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="470" height="6" rx="3" fill="#a855f7"/>
+    <text x="20" y="30" font-size="15" font-weight="800" fill="#ffffff">Modular Stylesheet Architecture</text>
+    <text x="315" y="30" font-size="12" font-weight="800" fill="#c084fc" font-family="monospace">css/*.css</text>
+
+    <g transform="translate(18, 44)">
+      <rect x="0" y="0" width="210" height="40" rx="8" fill="#090e1a" stroke="#2a3d60"/>
+      <text x="10" y="17" font-size="11" font-weight="800" fill="#c084fc" font-family="monospace">css/base.css</text>
+      <text x="10" y="32" font-size="10" fill="#94a3b8">Variables, Header, Slider, Toast</text>
+
+      <rect x="222" y="0" width="210" height="40" rx="8" fill="#090e1a" stroke="#2a3d60"/>
+      <text x="232" y="17" font-size="11" font-weight="800" fill="#c084fc" font-family="monospace">css/capture.css</text>
+      <text x="232" y="32" font-size="10" fill="#94a3b8">Glance Cards, Dial, Pills, Keypad</text>
+
+      <rect x="0" y="48" width="210" height="40" rx="8" fill="#090e1a" stroke="#2a3d60"/>
+      <text x="10" y="65" font-size="11" font-weight="800" fill="#c084fc" font-family="monospace">css/history.css</text>
+      <text x="10" y="80" font-size="10" fill="#94a3b8">Filters, Feed, Swipe-Delete Track</text>
+
+      <rect x="222" y="48" width="210" height="40" rx="8" fill="#090e1a" stroke="#2a3d60"/>
+      <text x="232" y="65" font-size="11" font-weight="800" fill="#c084fc" font-family="monospace">css/modals.css</text>
+      <text x="232" y="80" font-size="10" fill="#94a3b8">Large Mobile Edit UI, Currency &amp; R2</text>
+    </g>
+  </g>
+
+  <!-- Connectors Tier 1 -->
+  <line x1="340" y1="220" x2="378" y2="220" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <line x1="900" y1="220" x2="862" y2="220" stroke="#a855f7" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- =======================================================================
+       TIER 2: APPLICATION CONTROLLERS & UI MODULES (Y: 335 -> 545)
+       ======================================================================= -->
+  <text x="34" y="340" font-size="11" font-weight="800" fill="#64748b" letter-spacing="1.5">TIER 2 — FEATURE CONTROLLERS &amp; USER INTERACTION MODULES (js/*)</text>
+
+  <!-- js/app.js -->
+  <g transform="translate(30, 354)" filter="url(#softShadow)">
+    <rect width="305" height="190" rx="16" fill="url(#cardGrad)" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="0" y="0" width="305" height="6" rx="3" fill="#f59e0b"/>
+    <text x="18" y="30" font-size="15" font-weight="800" fill="#ffffff">App Bootstrapper &amp; Router</text>
+    <text x="220" y="30" font-size="12" font-weight="800" fill="#f59e0b" font-family="monospace">js/app.js</text>
+    <text x="18" y="56" font-size="12" fill="#e2e8f0" font-weight="700">DOMContentLoaded Lifecycle:</text>
+    <text x="18" y="76" font-size="11.5" fill="#cbd5e1">• initPWA() → registers service-worker.js</text>
+    <text x="18" y="95" font-size="11.5" fill="#cbd5e1">• switchScreen(0 | 1) → tab &amp; slider nav</text>
+    <text x="18" y="114" font-size="11.5" fill="#cbd5e1">• setupSwipeGestures() → horizontal pan</text>
+    <text x="18" y="133" font-size="11.5" fill="#cbd5e1">  (yields to swipe-left delete on .tx-item)</text>
+    <text x="18" y="152" font-size="11.5" fill="#cbd5e1">• openModal() / closeModal()</text>
+    <text x="18" y="171" font-size="11.5" fill="#cbd5e1">• setupPhysicalKeyboard() shortcuts</text>
+  </g>
+
+  <!-- js/capture.js -->
+  <g transform="translate(362, 354)" filter="url(#softShadow)">
+    <rect width="320" height="190" rx="16" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="0" y="0" width="320" height="6" rx="3" fill="#10b981"/>
+    <text x="18" y="30" font-size="15" font-weight="800" fill="#ffffff">Capture &amp; Totals Engine</text>
+    <text x="212" y="30" font-size="12" font-weight="800" fill="#34d399" font-family="monospace">js/capture.js</text>
+    <text x="18" y="56" font-size="12" fill="#e2e8f0" font-weight="700">Screen 1 (One-Thumb Entry):</text>
+    <text x="18" y="76" font-size="11.5" fill="#cbd5e1">• pressDigit() / pressBackspace() / clearInput()</text>
+    <text x="18" y="95" font-size="11.5" fill="#cbd5e1">• buildCategoryPills() &amp; selectCategory()</text>
+    <text x="18" y="114" font-size="11.5" fill="#cbd5e1">• commitRecord() → creates expense with</text>
+    <text x="18" y="133" font-size="11.5" fill="#cbd5e1">  id, amount, category, note, timestamp</text>
+    <text x="18" y="152" font-size="11.5" fill="#cbd5e1">• renderTotals() → aggregates Today, Week</text>
+    <text x="18" y="171" font-size="11.5" fill="#cbd5e1">  (Mon–Sun), and Month metrics + tab count</text>
+  </g>
+
+  <!-- js/history.js -->
+  <g transform="translate(710, 354)" filter="url(#softShadow)">
+    <rect width="335" height="190" rx="16" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="0" y="0" width="335" height="6" rx="3" fill="#10b981"/>
+    <text x="18" y="30" font-size="15" font-weight="800" fill="#ffffff">History, Swipe &amp; Edit Engine</text>
+    <text x="232" y="30" font-size="12" font-weight="800" fill="#34d399" font-family="monospace">js/history.js</text>
+    <text x="18" y="56" font-size="12" fill="#e2e8f0" font-weight="700">Screen 2 &amp; #editModal:</text>
+    <text x="18" y="76" font-size="11.5" fill="#cbd5e1">• applyTimeFilter() &amp; onSearchChange()</text>
+    <text x="18" y="95" font-size="11.5" fill="#cbd5e1">• renderHistoryView() → builds .tx-swipe-wrap</text>
+    <text x="18" y="114" font-size="11.5" fill="#cbd5e1">• Swipe Left on row → removeTx(id) + Undo Toast</text>
+    <text x="18" y="133" font-size="11.5" fill="#cbd5e1">• Tap on row → openEditModal(id)</text>
+    <text x="18" y="152" font-size="11.5" fill="#cbd5e1">• saveEditedTx() → updates amount, group,</text>
+    <text x="18" y="171" font-size="11.5" fill="#cbd5e1">  note, date/time &amp; bumps updatedAt</text>
+  </g>
+
+  <!-- js/sync.js -->
+  <g transform="translate(1072, 354)" filter="url(#softShadow)">
+    <rect width="298" height="190" rx="16" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="0" y="0" width="298" height="6" rx="3" fill="#38bdf8"/>
+    <text x="18" y="30" font-size="15" font-weight="800" fill="#ffffff">Cloud Sync &amp; Backup I/O</text>
+    <text x="210" y="30" font-size="12" font-weight="800" fill="#38bdf8" font-family="monospace">js/sync.js</text>
+    <text x="18" y="56" font-size="12" fill="#e2e8f0" font-weight="700">Multi-Device &amp; File Portability:</text>
+    <text x="18" y="76" font-size="11.5" fill="#cbd5e1">• syncWithR2() → Smart 2-Way Merge:</text>
+    <text x="18" y="95" font-size="11.5" fill="#cbd5e1">  GET remote → merge by id, updatedAt</text>
+    <text x="18" y="114" font-size="11.5" fill="#cbd5e1">  &amp; deletedIds tombstones → POST back</text>
+    <text x="18" y="133" font-size="11.5" fill="#cbd5e1">• pullFromR2() → restore from cloud</text>
+    <text x="18" y="152" font-size="11.5" fill="#cbd5e1">• pushToR2() → overwrite cloud backup</text>
+    <text x="18" y="171" font-size="11.5" fill="#cbd5e1">• exportBackupJSON() / importBackupJSON()</text>
+  </g>
+
+  <!-- Arrows from index.html (Tier 1) to Tier 2 Controllers -->
+  <path d="M 450 293 L 182 350" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#arrowAmber)"/>
+  <path d="M 550 293 L 522 350" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#arrowAmber)"/>
+  <path d="M 690 293 L 860 350" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#arrowAmber)"/>
+  <path d="M 790 293 L 1200 350" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#arrowAmber)"/>
+
+  <!-- =======================================================================
+       TIER 3: CENTRAL STATE MANAGEMENT HUB (Y: 585 -> 765)
+       ======================================================================= -->
+  <text x="34" y="582" font-size="11" font-weight="800" fill="#64748b" letter-spacing="1.5">TIER 3 — CENTRAL STATE HUB &amp; SHARED UTILITIES (js/state.js)</text>
+
+  <g transform="translate(180, 596)" filter="url(#softShadow)">
+    <rect width="1040" height="175" rx="18" fill="url(#stateGrad)" stroke="#10b981" stroke-width="2"/>
+    <rect x="0" y="0" width="1040" height="6" rx="3" fill="#10b981"/>
+
+    <text x="24" y="32" font-size="17" font-weight="800" fill="#ffffff">Central State &amp; Persistence Hub</text>
+    <text x="320" y="32" font-size="13" font-weight="800" fill="#34d399" font-family="monospace">js/state.js</text>
+    <text x="720" y="32" font-size="12" font-weight="700" fill="#94a3b8">Single Source of Truth Across All Views</text>
+
+    <!-- 4 State Pillars inside js/state.js -->
+    <rect x="22" y="48" width="240" height="110" rx="12" fill="#08111d" stroke="#1e2c45"/>
+    <text x="36" y="70" font-size="12" font-weight="800" fill="#34d399" font-family="monospace">expenses[]</text>
+    <text x="36" y="90" font-size="11" fill="#cbd5e1">• id: "tx_1729..."</text>
+    <text x="36" y="106" font-size="11" fill="#cbd5e1">• amount, category, note</text>
+    <text x="36" y="122" font-size="11" fill="#cbd5e1">• timestamp (chronological sort)</text>
+    <text x="36" y="138" font-size="11" fill="#cbd5e1">• updatedAt (2-way sync resolution)</text>
+
+    <rect x="276" y="48" width="240" height="110" rx="12" fill="#08111d" stroke="#1e2c45"/>
+    <text x="290" y="70" font-size="12" font-weight="800" fill="#fb7185" font-family="monospace">deletedMap{}</text>
+    <text x="290" y="90" font-size="11" fill="#cbd5e1">• { [txId]: deletedTimestamp }</text>
+    <text x="290" y="108" font-size="11" fill="#cbd5e1">• Tracks deletions as tombstones</text>
+    <text x="290" y="126" font-size="11" fill="#cbd5e1">• Prevents deleted records from</text>
+    <text x="290" y="142" font-size="11" fill="#cbd5e1">  reappearing during R2 Smart Sync</text>
+
+    <rect x="530" y="48" width="240" height="110" rx="12" fill="#08111d" stroke="#1e2c45"/>
+    <text x="544" y="70" font-size="12" font-weight="800" fill="#f6c453" font-family="monospace">currencySymbol &amp; CATEGORIES</text>
+    <text x="544" y="90" font-size="11" fill="#cbd5e1">• Configurable currency: £, $, €, ¥,</text>
+    <text x="544" y="106" font-size="11" fill="#cbd5e1">  ₹, kr, CHF via setCurrencySymbol()</text>
+    <text x="544" y="124" font-size="11" fill="#cbd5e1">• 7 Categories with color, bg &amp; SVG</text>
+    <text x="544" y="140" font-size="11" fill="#cbd5e1">  (Coffee, Food, Groceries, Transit...)</text>
+
+    <rect x="784" y="48" width="234" height="110" rx="12" fill="#08111d" stroke="#1e2c45"/>
+    <text x="798" y="70" font-size="12" font-weight="800" fill="#38bdf8" font-family="monospace">Core Helpers</text>
+    <text x="798" y="90" font-size="11" fill="#cbd5e1">• loadState() / saveState()</text>
+    <text x="798" y="106" font-size="11" fill="#cbd5e1">• sanitizeExpense() &amp; sortExpenses()</text>
+    <text x="798" y="122" font-size="11" fill="#cbd5e1">• getTimeBoundaries() (Day/Wk/Mo)</text>
+    <text x="798" y="138" font-size="11" fill="#cbd5e1">• showToast(msg, undoCallback)</text>
+  </g>
+
+  <!-- Arrows between Tier 2 Controllers and Tier 3 State Hub -->
+  <line x1="220" y1="544" x2="290" y2="594" stroke="#10b981" stroke-width="2" marker-end="url(#arrowEmerald)"/>
+  <line x1="522" y1="544" x2="522" y2="594" stroke="#10b981" stroke-width="2" marker-start="url(#arrowEmerald)" marker-end="url(#arrowEmerald)"/>
+  <line x1="875" y1="544" x2="875" y2="594" stroke="#10b981" stroke-width="2" marker-start="url(#arrowEmerald)" marker-end="url(#arrowEmerald)"/>
+  <line x1="1180" y1="544" x2="1090" y2="594" stroke="#10b981" stroke-width="2" marker-start="url(#arrowEmerald)" marker-end="url(#arrowEmerald)"/>
+
+  <!-- =======================================================================
+       TIER 4: PERSISTENCE, OFFLINE SERVICE WORKER & CLOUDFLARE R2 (Y: 820 -> 1030)
+       ======================================================================= -->
+  <text x="34" y="818" font-size="11" font-weight="800" fill="#64748b" letter-spacing="1.5">TIER 4 — OFFLINE SERVICE WORKER CACHE, BROWSER STORAGE &amp; CLOUDFLARE R2 BACKEND</text>
+
+  <!-- Service Worker & Cache Storage -->
+  <g transform="translate(30, 832)" filter="url(#softShadow)">
+    <rect width="410" height="192" rx="16" fill="url(#cloudGrad)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="0" y="0" width="410" height="6" rx="3" fill="#38bdf8"/>
+    <text x="20" y="30" font-size="15" font-weight="800" fill="#ffffff">Offline App Shell Service Worker</text>
+    <text x="285" y="30" font-size="11.5" font-weight="800" fill="#38bdf8" font-family="monospace">service-worker.js</text>
+    <text x="20" y="54" font-size="12" font-weight="700" fill="#7dd3fc">Cache Storage: thumbvault-shell-v5</text>
+    <text x="20" y="76" font-size="11.5" fill="#cbd5e1">• Pre-caches all 15 static files on install:</text>
+    <text x="28" y="95" font-size="11" fill="#94a3b8" font-family="monospace">index.html, manifest.json, icons/* (3),</text>
+    <text x="28" y="112" font-size="11" fill="#94a3b8" font-family="monospace">css/* (4 files), js/* (5 files)</text>
+    <text x="20" y="134" font-size="11.5" fill="#cbd5e1">• Network-first with automatic Cache fallback</text>
+    <text x="20" y="153" font-size="11.5" fill="#cbd5e1">• Purges outdated cache versions on activate</text>
+    <text x="20" y="172" font-size="11.5" fill="#34d399">• Guarantees instant offline startup on Android &amp; iOS</text>
+  </g>
+
+  <!-- Browser localStorage -->
+  <g transform="translate(475, 832)" filter="url(#softShadow)">
+    <rect width="430" height="192" rx="16" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.8"/>
+    <rect x="0" y="0" width="430" height="6" rx="3" fill="#10b981"/>
+    <text x="20" y="30" font-size="15" font-weight="800" fill="#ffffff">On-Device Browser Persistence</text>
+    <text x="280" y="30" font-size="11.5" font-weight="800" fill="#34d399" font-family="monospace">window.localStorage</text>
+    <text x="20" y="54" font-size="12" font-weight="700" fill="#e2e8f0">Persistent Key-Value Store (Same-Origin):</text>
+
+    <rect x="18" y="66" width="394" height="110" rx="10" fill="#080d18" stroke="#1e2c45"/>
+    <text x="30" y="86" font-size="11" font-weight="700" fill="#34d399" font-family="monospace">thumbvault_expenses_v2</text>
+    <text x="215" y="86" font-size="11" fill="#cbd5e1">→ JSON array of expenses</text>
+    <text x="30" y="106" font-size="11" font-weight="700" fill="#fb7185" font-family="monospace">thumbvault_deleted_v2</text>
+    <text x="215" y="106" font-size="11" fill="#cbd5e1">→ Deletion tombstone map</text>
+    <text x="30" y="126" font-size="11" font-weight="700" fill="#f6c453" font-family="monospace">thumbvault_currency</text>
+    <text x="215" y="126" font-size="11" fill="#cbd5e1">→ Active symbol (£, $, €...)</text>
+    <text x="30" y="146" font-size="11" font-weight="700" fill="#38bdf8" font-family="monospace">thumbvault_r2_url / _token</text>
+    <text x="215" y="146" font-size="11" fill="#cbd5e1">→ Worker endpoint &amp; key</text>
+    <text x="30" y="164" font-size="11" font-weight="700" fill="#c084fc" font-family="monospace">thumbvault_last_sync</text>
+    <text x="215" y="164" font-size="11" fill="#cbd5e1">→ Last R2 sync timestamp</text>
+  </g>
+
+  <!-- Cloudflare Worker + R2 Bucket -->
+  <g transform="translate(940, 832)" filter="url(#softShadow)">
+    <rect width="430" height="192" rx="16" fill="url(#cloudGrad)" stroke="#38bdf8" stroke-width="1.8"/>
+    <rect x="0" y="0" width="430" height="6" rx="3" fill="#38bdf8"/>
+    <text x="20" y="30" font-size="15" font-weight="800" fill="#ffffff">Cloudflare Worker &amp; R2 Object Storage</text>
+    <text x="20" y="50" font-size="11.5" font-weight="700" fill="#38bdf8" font-family="monospace">HTTPS Endpoint + Header: x-vault-key</text>
+
+    <rect x="18" y="64" width="394" height="112" rx="10" fill="#080d18" stroke="#1e2c45"/>
+    <text x="30" y="85" font-size="11.5" font-weight="800" fill="#34d399">1. Smart Sync (2-Way Merge):</text>
+    <text x="42" y="102" font-size="11" fill="#cbd5e1">GET remote JSON → merge items by newest updatedAt</text>
+    <text x="42" y="118" font-size="11" fill="#cbd5e1">&amp; filter out deletedIds → POST unified state back</text>
+    <text x="30" y="140" font-size="11.5" font-weight="800" fill="#7dd3fc">2. Pull from R2 (GET) / Push to R2 (POST):</text>
+    <text x="42" y="157" font-size="11" fill="#cbd5e1">Explicit cloud restore or cloud overwrite (&lt; 5 MiB)</text>
+  </g>
+
+  <!-- Connectors to Tier 4 -->
+  <!-- js/app.js -> service-worker.js -->
+  <path d="M 105 544 L 105 828" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowCyan)"/>
+  <text x="114" y="795" font-size="10.5" font-weight="700" fill="#38bdf8">initPWA() registers SW</text>
+
+  <!-- js/state.js <-> window.localStorage -->
+  <line x1="690" y1="771" x2="690" y2="828" stroke="#10b981" stroke-width="2.5" marker-start="url(#arrowEmerald)" marker-end="url(#arrowEmerald)"/>
+  <text x="702" y="803" font-size="10.5" font-weight="700" fill="#34d399">loadState() / saveState()</text>
+
+  <!-- js/sync.js <-> Cloudflare R2 -->
+  <path d="M 1265 544 L 1265 828" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-start="url(#arrowCyan)" marker-end="url(#arrowCyan)"/>
+  <text x="1275" y="700" font-size="10.5" font-weight="700" fill="#38bdf8">HTTPS GET / POST</text>
+  <text x="1275" y="716" font-size="10" fill="#94a3b8">(JSON + x-vault-key)</text>
+</svg>

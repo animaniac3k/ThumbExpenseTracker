@@ -40,7 +40,6 @@
         <div>
           <div class="brand-title">
             ThumbVault
-            <span class="brand-badge">£</span>
           </div>
         </div>
       </div>
@@ -101,7 +100,7 @@
           </div>
 
           <div class="amount-hero">
-            <span class="currency-sign">£</span>
+            <span class="currency-sign" id="activeCurrencySign">£</span>
             <span class="amount-value" id="activeAmountText">0</span>
           </div>
 
@@ -216,8 +215,11 @@
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="editAmountInput">Amount (£)</label>
-        <input type="number" id="editAmountInput" class="modal-input mono" step="0.01" min="0.01" inputmode="decimal" placeholder="0.00">
+        <label class="field-label" for="editAmountInput" id="editAmountLabel">Amount (£)</label>
+        <div class="edit-amount-box">
+          <span class="edit-currency-prefix" id="editCurrencyPrefix">£</span>
+          <input type="number" id="editAmountInput" step="0.01" min="0.01" inputmode="decimal" placeholder="0.00">
+        </div>
       </div>
 
       <div class="field-group">
@@ -271,6 +273,16 @@
       <p style="font-size: 12px; color: var(--text-muted);">
         Records stay directly on this device. Sync across devices or backup with Cloudflare R2.
       </p>
+
+      <!-- Currency Symbol Selector -->
+      <div class="currency-panel">
+        <div class="currency-panel-header">
+          <span class="currency-panel-title">Currency Symbol</span>
+        </div>
+        <div class="currency-pills" id="currencyPillsContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
 
       <!-- Cloudflare R2 Config & Triggers -->
       <div class="r2-panel">

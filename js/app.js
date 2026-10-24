@@ -4,8 +4,10 @@
 window.addEventListener('DOMContentLoaded', () => {
   initPWA();
   loadState();
+  applyCurrencySymbolToDOM();
   buildCategoryPills();
   updateThemeCategoryUI();
+  refreshInputDisplay();
   renderTotals();
   renderHistoryView();
   setupSwipeGestures();

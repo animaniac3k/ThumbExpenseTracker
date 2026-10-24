@@ -1,0 +1,150 @@
+================================================================================
+THUMBVAULT — HIGH-LEVEL ARCHITECTURE & SYSTEM CONNECTIONS
+================================================================================
+
+1. OVERVIEW
+-----------
+ThumbVault is an offline-first, mobile-centric Progressive Web App (PWA) for
+one-thumb expense tracking on Android and iOS devices. It uses a zero-build,
+modular vanilla HTML/CSS/JavaScript architecture with local persistence in
+`localStorage`, offline caching via a Service Worker, and optional multi-device
+cloud synchronization through a Cloudflare Worker connected to Cloudflare R2.
+
+
+2. PROJECT DIRECTORY & FILE STRUCTURE
+-------------------------------------
+ThumbVault/
+├── index.html                      # Entry point DOM shell (Header, Capture, History, Modals)
+├── manifest.json                   # PWA Web App Manifest (standalone display, icons, theme)
+├── service-worker.js               # Offline-first App Shell cache ('thumbvault-shell-v5')
+├── README.txt                      # Quick deployment & installation guide
+├── icons/
+│   ├── icon.svg                    # Vector app logo & in-app header badge
+│   ├── icon-192.png                # Android/iOS home screen & Apple touch icon (192x192)
+│   └── icon-512.png                # Splash screen & maskable PWA icon (512x512)
+├── css/
+│   ├── base.css                    # Design tokens, viewport layout, header, slider, toast
+│   ├── capture.css                 # Screen 1 styles (glance metrics, dial, pills, numpad)
+│   ├── history.css                 # Screen 2 styles (filters, summary strip, swipe rows)
+│   └── modals.css                  # Options modal, currency selector, R2 panel, Edit modal
+├── js/
+│   ├── state.js                    # Global state, CATEGORIES, localStorage I/O, toast/undo
+│   ├── capture.js                  # Numpad engine, category selection, record creation, totals
+│   ├── history.js                  # Search/time filtering, swipe-to-delete, Edit modal logic
+│   ├── sync.js                     # Cloudflare R2 Smart 2-Way Sync / Pull / Push & JSON I/O
+│   └── app.js                      # Bootstrapping, PWA SW registration, screen swipe, keyboard
+└── docs/
+    ├── architecture.txt            # This high-level architecture & connection reference
+    └── architecture-infographic.svg # Visual infographic diagram of the architecture
+
+
+3. HOW EVERYTHING CONNECTS (MODULE & DATA FLOW)
+-----------------------------------------------
+
+  +-------------------------------------------------------------------------+
+  |                             index.html (DOM)                            |
+  |  Links: manifest.json, icons/*, css/{base,capture,history,modals}.css   |
+  +-------------------------------------------------------------------------+
+       |
+       | Loads scripts in order (shared global scope):
+       v
+  [1] js/state.js   --> Defines shared state (`expenses`, `deletedMap`,
+       |                `currencySymbol`, `CATEGORIES`) and persistence APIs
+       |                (`loadState()`, `saveState()`, `showToast()`).
+       v
+  [2] js/capture.js --> Reads/mutates `activeInputStr`, `selectedCatId`, and
+       |                `expenses`. Updates Capture screen DOM & `renderTotals()`.
+       v
+  [3] js/history.js --> Reads/mutates `expenses` and `deletedMap`. Renders
+       |                filtered history list, handles swipe-left-to-delete
+       |                and tap-to-edit modal (`openEditModal`, `saveEditedTx`).
+       v
+  [4] js/sync.js    --> Connects local state (`expenses`, `deletedMap`) with
+       |                external storage: Local JSON files & Cloudflare R2 API.
+       v
+  [5] js/app.js     --> Listens for `DOMContentLoaded`, initializes all modules,
+                        registers `service-worker.js`, and binds screen-level
+                        touch gestures and physical keyboard shortcuts.
+
+
+4. DETAILED COMPONENT CONNECTIONS
+---------------------------------
+
+A. Bootstrapping & Offline PWA Layer (`js/app.js` <-> `service-worker.js` <-> `manifest.json`)
+   - On page load (`DOMContentLoaded`), `js/app.js` executes:
+     1. `initPWA()` -> Registers `service-worker.js`.
+     2. `loadState()` -> Hydrates `expenses`, `deletedMap`, and `currencySymbol`
+        from browser `localStorage`.
+     3. `applyCurrencySymbolToDOM()` -> Applies the active currency symbol (`£`, `$`,
+        `€`, etc.) across the dial, buttons, modals, and summaries.
+     4. `buildCategoryPills()` & `updateThemeCategoryUI()` -> Builds the horizontal
+        category carousel and sets CSS custom properties (`--cat-color`, `--cat-bg`).
+     5. `renderTotals()` & `renderHistoryView()` -> Computes Today/Week/Month totals
+        and populates the transaction feed.
+     6. `setupSwipeGestures()` & `setupPhysicalKeyboard()` -> Attaches touch and
+        keyboard listeners to `#viewport`.
+     7. `loadR2Config()` -> Restores saved Cloudflare Worker URL, secret key, and
+        last sync timestamp into `#optionsModal`.
+   - `service-worker.js` caches all 15 static assets in `APP_SHELL` on install.
+     When the phone is offline, network requests fall back to the cached shell so
+     the app launches instantaneously without a network connection.
+
+B. State & Local Storage Layer (`js/state.js` <-> `window.localStorage`)
+   - `js/state.js` acts as the single source of truth using four `localStorage` keys:
+     * `thumbvault_expenses_v2`: Array of expense objects:
+       `{ id, amount, category, note, timestamp, updatedAt }`
+     * `thumbvault_deleted_v2`: Map of deleted transaction IDs to deletion timestamps:
+       `{ [txId]: deletedAtTimestamp }` (tombstones used during multi-device R2 sync)
+     * `thumbvault_currency`: User-selected currency symbol (`£`, `$`, `€`, `¥`, etc.)
+     * `thumbvault_last_sync`: Timestamp of the most recent Cloudflare R2 sync
+   - Every create, edit, delete, undo, or sync operation calls `saveState()`, which
+     sorts `expenses` chronologically (`b.timestamp - a.timestamp`) and writes to
+     `localStorage`, followed by `renderTotals()` and `renderHistoryView()`.
+
+C. Screen 1: Capture Flow (`#screenCapture` <-> `js/capture.js` <-> `js/state.js`)
+   - Keypad taps call `pressDigit()`, `pressBackspace()`, or `clearInput()`, which
+     update `activeInputStr` and refresh `#activeAmountText` and `#recordLabel`.
+   - Category pill taps call `selectCategory(id)`, updating `selectedCatId` and
+     the accent color of `#dialCard`.
+   - Tapping the Record button calls `commitRecord()`:
+     * Validates the amount, constructs a new transaction with `timestamp: Date.now()`
+       and `updatedAt: Date.now()`, inserts it into `expenses`, calls `saveState()`,
+       resets the dial, triggers haptic vibration, and refreshes both screens.
+
+D. Screen 2: History, Swipe-to-Delete & Edit Flow (`#screenHistory` <-> `js/history.js`)
+   - Search box (`onSearchChange`) and time filter pills (`applyTimeFilter` for
+     All / Today / Week / Month) filter `expenses` and update the summary strip
+     (`#filteredCountLabel`, `#filteredSumLabel`).
+   - Each transaction row (`.tx-item` inside `.tx-swipe-wrap`) has dedicated touch
+     handlers in `attachItemInteractions()`:
+     * SWIPE LEFT (`dx < 0`): Stops event propagation to `#viewport`, drags the card
+       left to reveal the red Delete track, and if dragged past `-75px`, calls
+       `removeTx(id)`. `removeTx(id)` removes the record, records a tombstone in
+       `deletedMap[id]`, and displays a Toast with an "Undo" button (`handleToastUndo()`).
+     * SWIPE RIGHT (`dx > 0`): Bubbles up to `#viewport` in `js/app.js` so swiping
+       right anywhere on the History screen smoothly slides back to the Capture screen.
+     * TAP (no drag): Calls `openEditModal(id)`, opening `#editModal` pre-filled with
+       the transaction's amount, category, note, and local date/time.
+   - Tapping "Save Changes" in `#editModal` calls `saveEditedTx()`, which updates the
+     transaction, bumps `updatedAt = Date.now()`, re-sorts `expenses` by `timestamp`,
+     persists to `localStorage`, and refreshes all totals and history views.
+
+E. Cloud Sync & Backup Layer (`#optionsModal` <-> `js/sync.js` <-> Cloudflare R2)
+   - Local File Backup:
+     * `exportBackupJSON()` serializes `expenses` into a downloadable `.json` file.
+     * `importBackupJSON()` parses and sanitizes uploaded `.json` files.
+   - Cloudflare R2 Integration (via HTTPS Cloudflare Worker + `x-vault-key` header):
+     * SMART SYNC (`syncWithR2()`):
+       1. Sends `GET` to the Cloudflare Worker to fetch remote `{ expenses, deletedIds }`.
+       2. Merges local `deletedMap` and remote `deletedIds` (keeping latest deletion time).
+       3. Merges local and remote `expenses` by `id`: if an item exists in both, the
+          record with the newer `updatedAt` timestamp wins.
+       4. Filters out any item whose `id` has a tombstone in `mergedDeleted` newer than
+          or equal to its `updatedAt` timestamp (preventing deleted items from reappearing).
+       5. Saves the merged state locally, updates the UI, and sends `POST` back to the
+          Cloudflare Worker so both device and cloud are identical.
+     * PULL FROM R2 (`pullFromR2()`):
+       Sends `GET` to the Worker and overwrites local `expenses` and `deletedMap` with
+       the cloud backup.
+     * PUSH TO R2 (`pushToR2()`):
+       Sends `POST` to the Worker to overwrite the cloud backup with local data.

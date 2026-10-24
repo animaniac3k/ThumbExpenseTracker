@@ -56,9 +56,12 @@ const CATEGORIES = [
 const STORAGE_KEY = 'thumbvault_expenses_v2';
 const DELETED_KEY = 'thumbvault_deleted_v2';
 const LAST_SYNC_KEY = 'thumbvault_last_sync';
+const CURRENCY_KEY = 'thumbvault_currency';
+const CURRENCY_OPTIONS = ['£', '$', '€', '¥', '₹', 'kr', 'CHF'];
 
 let expenses = [];
 let deletedMap = {}; // { [txId]: deletedTimestamp } for multi-device 2-way sync
+let currencySymbol = '£';
 let currentScreenIdx = 0; // 0 = Capture, 1 = History
 let activeInputStr = '0';
 let selectedCatId = 'coffee';
@@ -86,6 +89,15 @@ function sortExpenses() {
 
 function loadState() {
   try {
+    const savedCurr = localStorage.getItem(CURRENCY_KEY);
+    if (savedCurr && savedCurr.trim()) {
+      currencySymbol = savedCurr.trim().slice(0, 5);
+    }
+  } catch (e) {
+    currencySymbol = '£';
+  }
+
+  try {
     const rawDel = localStorage.getItem(DELETED_KEY);
     if (rawDel) {
       const parsedDel = JSON.parse(rawDel);
@@ -111,6 +123,50 @@ function loadState() {
   } catch (e) {
     populateSampleData();
   }
+}
+
+function setCurrencySymbol(sym) {
+  const clean = String(sym || '').trim().slice(0, 5);
+  if (!clean) return;
+  triggerHaptic(10);
+  currencySymbol = clean;
+  try {
+    localStorage.setItem(CURRENCY_KEY, currencySymbol);
+  } catch (e) {}
+  applyCurrencySymbolToDOM();
+  renderTotals();
+  renderHistoryView();
+  if (typeof refreshInputDisplay === 'function') {
+    refreshInputDisplay();
+  }
+}
+
+function applyCurrencySymbolToDOM() {
+  const activeSign = document.getElementById('activeCurrencySign');
+  if (activeSign) activeSign.textContent = currencySymbol;
+
+  const editPrefix = document.getElementById('editCurrencyPrefix');
+  if (editPrefix) editPrefix.textContent = currencySymbol;
+
+  const editLabel = document.getElementById('editAmountLabel');
+  if (editLabel) editLabel.textContent = `Amount (${currencySymbol})`;
+
+  renderCurrencySelector();
+}
+
+function renderCurrencySelector() {
+  const container = document.getElementById('currencyPillsContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  CURRENCY_OPTIONS.forEach(sym => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `currency-pill-btn ${sym === currencySymbol ? 'selected' : ''}`;
+    btn.textContent = sym;
+    btn.onclick = () => setCurrencySymbol(sym);
+    container.appendChild(btn);
+  });
 }
 
 function saveState() {

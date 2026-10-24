@@ -117,18 +117,7 @@ header {
   color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 5px;
   white-space: nowrap;
-}
-
-.brand-badge {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 6px;
-  background: rgba(246, 196, 83, 0.16);
-  color: #f6c453;
-  border: 1px solid rgba(246, 196, 83, 0.35);
 }
 
 /* Screen Selector Segmented Pills */
@@ -219,9 +208,6 @@ header {
   .brand-title {
     font-size: 14px;
     letter-spacing: -0.03em;
-  }
-  .brand-badge {
-    padding: 1px 4px;
   }
   .screen-tab-btn {
     font-size: 11px;
