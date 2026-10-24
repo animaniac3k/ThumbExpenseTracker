@@ -1,18 +1,33 @@
-ThumbVault PWA package
+ThumbVault PWA Package
 
 Upload all contents of this folder together to the same directory on an HTTPS website.
 Keep this structure:
   index.html
   manifest.json
   service-worker.js
-  icons/icon.svg
-  icons/icon-192.png
-  icons/icon-512.png
+  icons/
+    icon.svg
+    icon-192.png
+    icon-512.png
+  css/
+    base.css
+    capture.css
+    history.css
+    modals.css
+  js/
+    state.js
+    capture.js
+    history.js
+    sync.js
+    app.js
 
-Android installation:
-1. Open the HTTPS URL in Chrome.
-2. Use Chrome menu > Install app (or Add to Home screen).
-3. If an older installation exists, uninstall it, clear the site's data/cache in Chrome, and reinstall to refresh the icon and manifest.
+Android & iOS installation:
+1. Open the HTTPS URL in Chrome (Android) or Safari (iOS).
+2. Use Chrome menu > Install app (or Safari Share > Add to Home Screen).
+3. If an older installation exists, uninstall it, clear the site's data/cache, and reinstall to refresh the icon and manifest.
+
+Cloudflare R2 Worker (GET & POST support for 2-way Sync / Pull / Push):
+Make sure your Cloudflare Worker handles both GET (returning the stored JSON object from your R2 bucket) and POST (saving the JSON body to your R2 bucket), with CORS headers allowing 'GET, POST, OPTIONS' and header 'x-vault-key'.
 
 Important:
 - Do not open from file://. Manifest and service worker must be served from the same origin; service workers require HTTPS except on localhost.

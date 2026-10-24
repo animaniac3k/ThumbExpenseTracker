@@ -2,7 +2,7 @@
   "id": "./",
   "name": "ThumbVault Expense Tracker",
   "short_name": "ThumbVault",
-  "description": "Mobile-first expense tracker with local storage and optional backup.",
+  "description": "Mobile-first expense tracker with local storage and optional Cloudflare R2 sync.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -10,6 +10,12 @@
   "background_color": "#0c1220",
   "theme_color": "#0c1220",
   "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "./icons/icon-192.png",
       "sizes": "192x192",

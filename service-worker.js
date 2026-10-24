@@ -1,5 +1,22 @@
-const CACHE_NAME = 'thumbvault-shell-v2';
-const APP_SHELL = ['./','./index.html','./manifest.json','./icons/icon.svg','./icons/icon-192.png','./icons/icon-512.png'];
+const CACHE_NAME = 'thumbvault-shell-v4';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon.svg',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './css/base.css',
+  './css/capture.css',
+  './css/history.css',
+  './css/modals.css',
+  './js/state.js',
+  './js/capture.js',
+  './js/history.js',
+  './js/sync.js',
+  './js/app.js'
+];
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
@@ -7,13 +24,19 @@ self.addEventListener('install', event => {
     await self.skipWaiting();
   })());
 });
+
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith('thumbvault-shell-') && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await Promise.all(
+      keys
+        .filter(key => key.startsWith('thumbvault-') && key !== CACHE_NAME)
+        .map(key => caches.delete(key))
+    );
     await self.clients.claim();
   })());
 });
+
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
